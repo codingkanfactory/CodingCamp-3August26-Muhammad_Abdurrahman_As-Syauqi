@@ -22,11 +22,24 @@ const BASE_CATEGORIES = [
   { name: 'Hiburan',       icon: 'gamepad-2' },
 ];
 
-/** Palette for chart slices - Teal Theme */
+/** Palette for chart slices - Vibrant & Colorful */
 const CHART_PALETTE = [
-  '#14b8a6', '#0d9488', '#06b6d4', '#0891b2',
-  '#10b981', '#059669', '#6366f1', '#4f46e5',
-  '#8b5cf6', '#7c3aed', '#ec4899', '#db2777',
+  '#FF6B6B', // Bright Red
+  '#4ECDC4', // Turquoise
+  '#45B7D1', // Sky Blue
+  '#FFA07A', // Light Salmon
+  '#98D8C8', // Mint
+  '#F7DC6F', // Yellow
+  '#BB8FCE', // Purple
+  '#85C1E2', // Light Blue
+  '#F8B195', // Peach
+  '#52B788', // Green
+  '#F72585', // Magenta
+  '#7209B7', // Deep Purple
+  '#F77F00', // Orange
+  '#06FFA5', // Bright Cyan
+  '#FF006E', // Hot Pink
+  '#8338EC', // Electric Purple
 ];
 
 /** Application state (source of truth) */
@@ -61,6 +74,29 @@ function formatDate(isoStr) {
   const [y, m, d] = isoStr.split('-');
   const date = new Date(+y, +m - 1, +d);
   return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+/** Get current date formatted for Indonesian locale */
+function getCurrentDateFormatted() {
+  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  const now = new Date();
+  const dayName = days[now.getDay()];
+  const day = now.getDate();
+  const month = months[now.getMonth()];
+  const year = now.getFullYear();
+  return `${dayName}, ${day} ${month} ${year}`;
+}
+
+/** Get today's date in YYYY-MM-DD format */
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/** Get current month in YYYY-MM format */
+function getCurrentMonthKey() {
+  return new Date().toISOString().slice(0, 7);
 }
 
 /** Parse ISO date to "YYYY-MM" month key */
@@ -412,12 +448,27 @@ function handleThresholdChange() {
 function renderBalance() {
   const total = state.transactions.reduce((sum, tx) => sum + tx.amount, 0);
   const count = state.transactions.length;
+  const average = count > 0 ? total / count : 0;
 
+  // Calculate today's spending
+  const todayKey = getTodayKey();
+  const todayTotal = state.transactions
+    .filter(tx => tx.date === todayKey)
+    .reduce((sum, tx) => sum + tx.amount, 0);
+
+  // Calculate this month's spending
+  const currentMonthKey = getCurrentMonthKey();
+  const monthTotal = state.transactions
+    .filter(tx => monthKey(tx.date) === currentMonthKey)
+    .reduce((sum, tx) => sum + tx.amount, 0);
+
+  // Update all card elements
+  document.getElementById('currentDate').textContent = getCurrentDateFormatted();
   document.getElementById('totalBalance').textContent = formatRupiah(total);
-  document.getElementById('balanceSub').textContent   =
-    count === 0
-      ? '0 transaksi tercatat'
-      : `${count} transaksi · ${formatRupiah(total / count)} rata-rata`;
+  document.getElementById('todaySpending').textContent = formatRupiah(todayTotal);
+  document.getElementById('avgTransaction').textContent = formatRupiah(average);
+  document.getElementById('transactionCount').textContent = count;
+  document.getElementById('monthSpending').textContent = formatRupiah(monthTotal);
 }
 
 /* ------------------------------------------------------------------ */

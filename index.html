@@ -18,12 +18,12 @@
 
     <!-- ===== HEADER ===== -->
     <header class="app-header">
-        <div class="header-inner">
-            <div class="header-brand">
-                <i data-lucide="wallet" class="header-icon"></i>
-                <h1 class="header-title">Expense &amp; Budget Visualizer</h1>
+        <div class="app-header__inner">
+            <div class="app-header__brand">
+                <i data-lucide="wallet" class="app-header__icon"></i>
+                <h1 class="app-header__title">Expense &amp; Budget Visualizer</h1>
             </div>
-            <button id="themeToggleBtn" class="btn-icon" title="Toggle tema" aria-label="Toggle dark/light mode">
+            <button id="themeToggleBtn" class="btn btn--icon" title="Toggle tema" aria-label="Toggle dark/light mode">
                 <i data-lucide="moon" id="themeIcon"></i>
             </button>
         </div>
@@ -32,11 +32,40 @@
     <!-- ===== MAIN CONTENT ===== -->
     <main class="container">
 
-        <!-- BALANCE CARD -->
+        <!-- PREMIUM BANK CARD -->
         <section class="balance-card" aria-label="Total saldo">
-            <p class="balance-label">Total Pengeluaran</p>
-            <p class="balance-amount" id="totalBalance">Rp 0</p>
-            <p class="balance-sub" id="balanceSub">0 transaksi tercatat</p>
+            <div class="balance-card__header">
+                <div class="balance-card__chip">
+                    <i data-lucide="credit-card"></i>
+                </div>
+                <div class="balance-card__date" id="currentDate">Loading...</div>
+            </div>
+
+            <div class="balance-card__main">
+                <p class="balance-card__label">Total Pengeluaran</p>
+                <p class="balance-card__amount" id="totalBalance">Rp 0</p>
+            </div>
+
+            <div class="balance-card__grid">
+                <div class="balance-card__stat">
+                    <span class="balance-card__stat-label">Hari Ini</span>
+                    <span class="balance-card__stat-value" id="todaySpending">Rp 0</span>
+                </div>
+                <div class="balance-card__stat">
+                    <span class="balance-card__stat-label">Rata-rata</span>
+                    <span class="balance-card__stat-value" id="avgTransaction">Rp 0</span>
+                </div>
+                <div class="balance-card__stat">
+                    <span class="balance-card__stat-label">Transaksi</span>
+                    <span class="balance-card__stat-value" id="transactionCount">0</span>
+                </div>
+                <div class="balance-card__stat">
+                    <span class="balance-card__stat-label">Bulan Ini</span>
+                    <span class="balance-card__stat-value" id="monthSpending">Rp 0</span>
+                </div>
+            </div>
+
+            <div class="balance-card__number">•••• •••• •••• 2026</div>
         </section>
 
         <!-- TWO-COLUMN LAYOUT -->
@@ -47,30 +76,32 @@
 
                 <!-- INPUT FORM -->
                 <section class="card" aria-label="Form tambah transaksi">
-                    <h2 class="card-title">Tambah Transaksi</h2>
+                    <h2 class="card__title">Tambah Transaksi</h2>
                     <form id="transactionForm" novalidate>
 
-                        <div class="form-group">
+                        <div class="form__group">
                             <label for="itemName">Nama Item <span class="required">*</span></label>
-                            <input type="text" id="itemName" placeholder="Contoh: Makan siang" autocomplete="off" />
+                            <input type="text" id="itemName" class="form__input" placeholder="Contoh: Makan siang"
+                                autocomplete="off" />
                             <span class="error-msg" id="itemNameError"></span>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form__group">
                             <label for="itemAmount">Jumlah (Rp) <span class="required">*</span></label>
-                            <input type="number" id="itemAmount" placeholder="Contoh: 25000" min="1" />
+                            <input type="number" id="itemAmount" class="form__input" placeholder="Contoh: 25000"
+                                min="1" />
                             <span class="error-msg" id="itemAmountError"></span>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form__group">
                             <label for="itemDate">Tanggal <span class="required">*</span></label>
-                            <input type="date" id="itemDate" />
+                            <input type="date" id="itemDate" class="form__input" />
                             <span class="error-msg" id="itemDateError"></span>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form__group">
                             <label for="itemCategory">Kategori <span class="required">*</span></label>
-                            <select id="itemCategory">
+                            <select id="itemCategory" class="form__select">
                                 <option value="">-- Pilih Kategori --</option>
                                 <option value="Makanan">🍔 Makanan</option>
                                 <option value="Transportasi">🚌 Transportasi</option>
@@ -79,7 +110,7 @@
                             <span class="error-msg" id="itemCategoryError"></span>
                         </div>
 
-                        <button type="submit" class="btn-primary" id="submitBtn">
+                        <button type="submit" class="btn btn--primary" id="submitBtn">
                             <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
                             <span>Tambah Transaksi</span>
                         </button>
@@ -88,11 +119,11 @@
 
                 <!-- CUSTOM CATEGORY -->
                 <section class="card" aria-label="Tambah kategori kustom">
-                    <h2 class="card-title">Kategori Kustom</h2>
+                    <h2 class="card__title">Kategori Kustom</h2>
                     <div class="custom-cat-form">
                         <input type="text" id="customCatInput" placeholder="Nama kategori baru..." maxlength="30"
                             autocomplete="off" />
-                        <button id="addCategoryBtn" class="btn-secondary">Tambah</button>
+                        <button id="addCategoryBtn" class="btn btn--secondary">Tambah</button>
                     </div>
                     <span class="error-msg" id="customCatError"></span>
                     <div id="customCategoryList" class="custom-cat-list" aria-label="Daftar kategori kustom"></div>
@@ -100,7 +131,7 @@
 
                 <!-- MONTHLY SUMMARY -->
                 <section class="card" aria-label="Ringkasan bulanan">
-                    <h2 class="card-title">Ringkasan Bulanan</h2>
+                    <h2 class="card__title">Ringkasan Bulanan</h2>
                     <div id="monthlySummary" class="monthly-list">
                         <p class="empty-state">Belum ada data.</p>
                     </div>
@@ -113,7 +144,7 @@
 
                 <!-- PIE CHART -->
                 <section class="card chart-card" aria-label="Grafik pengeluaran per kategori">
-                    <h2 class="card-title">Distribusi Pengeluaran</h2>
+                    <h2 class="card__title">Distribusi Pengeluaran</h2>
                     <div class="chart-wrapper">
                         <canvas id="expenseChart" aria-label="Pie chart distribusi pengeluaran"></canvas>
                     </div>
@@ -123,8 +154,8 @@
                 <!-- TRANSACTION LIST -->
                 <section class="card" aria-label="Daftar transaksi">
                     <div class="list-header">
-                        <h2 class="card-title">Riwayat Transaksi</h2>
-                        <button id="clearAllBtn" class="btn-danger-sm" title="Hapus semua transaksi">
+                        <h2 class="card__title">Riwayat Transaksi</h2>
+                        <button id="clearAllBtn" class="btn btn--danger-sm" title="Hapus semua transaksi">
                             <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
                             Hapus Semua
                         </button>
